@@ -27,6 +27,8 @@ n_special = df['Grade Type'].value_counts()["Special"]
 
 Disciplines = {'Trad': n_trad, 'Sport': n_sport, 'Bouldering': n_bouldering, 'Alpine': n_alpine, 'Winter': n_winter, 'Scrambling': n_scrambling, 'Mixed': n_mixed, 'Special': n_special}
 
+# Graph below presents number of climbs completed by each discipline
+
 #plt.bar(Disciplines.keys(), Disciplines.values())
 #plt.title('Number of Climbs by Discipline')
 #plt.show()
