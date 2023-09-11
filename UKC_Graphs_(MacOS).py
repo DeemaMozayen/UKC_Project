@@ -3,19 +3,10 @@ import numpy as np
 import pandas as pd
 import csv
 
+# Source data from UKC spreadsheet, filepath is absolute - specific to Chloe's macbook
 df = pd.read_csv(r'/Users/chloejones/VSCode/UKC_Project-main/Deema Mozayen_Logbook.csv')
 
-# df.loc extracts all rows from the table based on another specified column value 
-Trad = df.loc[df['Grade Type'] == 'Trad']
-Sport = df.loc[df['Grade Type'] == 'Sport']
-Bouldering = df.loc[df['Grade Type'] == 'Bouldering']
-Alpine = df.loc[df['Grade Type'] == 'Alpine']
-Winter = df.loc[df['Grade Type'] == 'Winter']
-Scrambling = df.loc[df['Grade Type'] == 'Scrambling']
-Mixed = df.loc[df['Grade Type'] == 'Mixed']
-Special = df.loc[df['Grade Type'] == 'Special']
-
-# Count number of climbs by discipline
+# //////    Count number of climbs by discipline
 n_trad = df['Grade Type'].value_counts()["Trad"]
 n_sport = df['Grade Type'].value_counts()["Sport"]
 n_bouldering = df['Grade Type'].value_counts()["Bouldering"]
@@ -27,14 +18,14 @@ n_special = df['Grade Type'].value_counts()["Special"]
 
 Disciplines = {'Trad': n_trad, 'Sport': n_sport, 'Bouldering': n_bouldering, 'Alpine': n_alpine, 'Winter': n_winter, 'Scrambling': n_scrambling, 'Mixed': n_mixed, 'Special': n_special}
 
-# Graph below presents number of climbs completed by each discipline
-
 #plt.bar(Disciplines.keys(), Disciplines.values())
 #plt.title('Number of Climbs by Discipline')
 #plt.show()
 
+# //////    Count number of sport climbs per country
+
 Sport_df = df[df['Grade Type'] == 'Sport']
-# Count number, specifically of sport climbs, in each country
+
 Sport_England = Sport_df['Country'].value_counts()['England']
 Sport_Wales = Sport_df['Country'].value_counts()['Wales']
 Sport_Spain = Sport_df['Country'].value_counts()['Spain']
@@ -49,11 +40,12 @@ Sport_by_country = {'England': Sport_England, 'Wales': Sport_Wales, 'Spain': Spo
 #plt.title('Number of Sport Climbs by Country')
 #plt.show()
 
-# Count number of trad climbs, by grade
+# //////    Count number of trad climbs, by grade
 # Need to work out how to iterate over different string values
 # i.e Each HVS has a different tech grade and number of stars and I need to count them all in one category 
-Trad_df = df[df['Grade Type'] == 'Trad']
 #HVS_5a_3s = Trad_df['Grade'].value_counts()['HVS 5a ***']
+
+Trad_df = df[df['Grade Type'] == 'Trad']
 
 #VS = Trad_df['Grade'].apply(lambda x: 'VS' in x).sum() -> This doesn't work as it will count HVS logs as they contain 'VS'
 HVS = Trad_df['Grade'].apply(lambda x: 'HVS' in x)
@@ -64,18 +56,14 @@ E4 = Trad_df['Grade'].apply(lambda x: 'E4' in x)
 E5 = Trad_df['Grade'].apply(lambda x: 'E5' in x)
 E6 = Trad_df['Grade'].apply(lambda x: 'E6' in x)
 
-
-#Trad_climbs = {'HVS': HVS, 'E1': E1, 'E2': E2, 'E3': E3, 'E4': E4, 'E5': E5}
+Trad_climbs = {'HVS': HVS, 'E1': E1, 'E2': E2, 'E3': E3, 'E4': E4, 'E5': E5}
 
 #plt.bar(Trad_climbs.keys(), Trad_climbs.values())
 #plt.title('Number of Trad climbs per Grade')
 #plt.show()
-#print(str(HVS_5a_3s))
-#print(str(HVS))
 
-# Next step: grouped bar chart with DNF vs Clean, per grade
+# //////    Next step: grouped bar chart with Clean vs Failed Ascents, per grade
 # Could also try and do the same but with different tech grades or stars
-
 
 clean_HVS = HVS[(df['Style'].str.contains('O/S' or 'β' or 'G/U'))].sum()
 failed_HVS = HVS[(df['Style'].str.contains('dog' or 'dnf'))].sum()
@@ -117,13 +105,12 @@ ax.set_ylim(0,70)
 
 plt.show()
 
-# Sport climbs by grade (clean vs failed)
-# Need to turn a list of strings into variables and perform the lamda operator on each
+# //////    Sport climbs by grade (clean vs failed)
 
+Sport_grades = ('6a', '6a+', '6b', '6b+', '6c', '6c+', '7a', '7a+', '7b', '7b+', '7c', '7c+', '8a', '8a+')
+# Would be great if the block of code below could instead be achieved with a for loop, iterating on the list above - but I don't know how to do this so that it generates variables
 
-#for grade in Sport_grades:
-
-
+# Extract sport climbs at each grade 
 _6a = Sport_df['Grade'].apply(lambda x: '6a' in x)
 _6aplus = Sport_df['Grade'].apply(lambda x: '6a+' in x)
 _6b = Sport_df['Grade'].apply(lambda x: '6b' in x)
@@ -139,7 +126,7 @@ _7cplus = Sport_df['Grade'].apply(lambda x: '7c+' in x)
 _8a = Sport_df['Grade'].apply(lambda x: '8a' in x)
 _8aplus = Sport_df['Grade'].apply(lambda x: '8a+' in x)
 
-
+# Of the list of sport climbs at each grade, determine which are clean or failed
 failed_6a = _6a[(df['Style'].str.contains('dog' or 'dnf'))].sum()
 clean_6a = _6a[(df['Style'].str.contains('O/S' or 'β' or 'G/U' or 'RP'))].sum()
 failed_6aplus = _6aplus[(df['Style'].str.contains('dog' or 'dnf'))].sum()
@@ -168,8 +155,6 @@ failed_8a = _8a[(df['Style'].str.contains('dog' or 'dnf'))].sum()
 clean_8a = _8a[(df['Style'].str.contains('O/S' or 'β' or 'G/U' or 'RP'))].sum()
 failed_8aplus = _8aplus[(df['Style'].str.contains('dog' or 'dnf'))].sum()
 clean_8aplus = _8aplus[(df['Style'].str.contains('O/S' or 'β' or 'G/U' or 'RP'))].sum()
-
-Sport_grades = ('6a', '6a+', '6b', '6b+', '6c', '6c+', '7a', '7a+', '7b', '7b+', '7c', '7c+', '8a', '8a+')
 
 Sport_ascents = {
     'Clean':(clean_6a, clean_6aplus, clean_6b, clean_6bplus, clean_6c, clean_6cplus, clean_7a, clean_7aplus, clean_7b, clean_7bplus, clean_7c, clean_7cplus, clean_8a, clean_8aplus),
